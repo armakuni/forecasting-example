@@ -11,18 +11,21 @@ backlog = Forecasting.load_backlog('backlog.yml')
 performance = Forecasting.load_performance('performance.yml')
 
 iterations = 100000
-workers = 1
+workers = 2
 samples = []
 
+# Obviously you want a whole team working on the backlog, not just one worker! In this exercise, we have a prioritised
+# backlog, and each worker takes the next backlog item when they've finished with their previous one. The critical
+# path becomes the worker with the longest elapsed time and that is what we record for our distribution.
 iterations.times do
   worker_elapsed = [0.0] * workers
   backlog.each do |task|
     complexity = performance[task.complexity]
     elapsed = Distribution::Triangular.random(complexity.mode, complexity.lower, complexity.upper)
-    worker_elapsed.sort!
-    worker_elapsed[0] += elapsed # next worker to finish a task
+    worker_elapsed.sort!  # determine next worker to finish a task
+    worker_elapsed[0] += elapsed
   end
-  samples << worker_elapsed.sort.last # choose worker with longest  elapsed time
+  samples << worker_elapsed.max # choose worker with longest  elapsed time
 end
 
 samples.sort!

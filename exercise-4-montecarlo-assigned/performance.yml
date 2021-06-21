@@ -10,7 +10,7 @@ performance:
   mode: 12.0
   distribution: triangular
 - complexity: 3
-  lower: 54.0
-  upper: 83.0
-  mode: 60.0
+  lower: 14.0
+  upper: 63.0
+  mode: 30.0
   distribution: triangular

@@ -1,2 +1,6 @@
-require_relative 'forecasting/objects'
+require_relative 'distribution/select'
 require_relative 'distribution/triangular'
+require_relative 'distribution/pert'
+require_relative 'distribution/uniform'
+require_relative 'forecasting/objects'
+require_relative 'forecasting/montecarlo'

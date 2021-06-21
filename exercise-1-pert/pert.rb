@@ -13,6 +13,13 @@ performance = Forecasting.load_performance('performance.yml')
 total_elapsed = 0.0
 total_variance = 0.0
 
+# For PERT, we use a triangular distribution (aka PERT Beta distribution). This is an approximation
+# to the real distribution, which is fine as you'd need to have hundreds of sample points for each
+# level of complexity to model it accurately. For each task, we calculate the averaged elapsed time
+# and the variance (std-dev squared). The full path can then be calculated as:
+#
+#  average elapsed time = sum(individual elapsed times)
+#  std dev = sqrt(sum individual variances)
 backlog.each do |task|
   complexity = performance[task.complexity]
   elapsed = (complexity.lower + 4 * complexity.mode + complexity.upper) / 6.0
@@ -21,6 +28,9 @@ backlog.each do |task|
   total_variance += std_dev * std_dev
 end
 
+# And then finally we can calculate our confidence percentiles using zvalues
+# zvalues are tricky to calculate, so I've just used the std normal ones. This might be wrong,
+# as our individual distributions are triangular, but I'm relying on the central limit theorem.
 std_dev = Math.sqrt(total_variance)
 z80 = 1.281551565545
 z90 = 1.644853626951

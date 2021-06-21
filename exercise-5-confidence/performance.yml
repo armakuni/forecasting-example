@@ -1,13 +1,13 @@
 performance:
 - complexity: 1
-  lower: 1.2
-  upper: 3.0
-  mode: 2.0
+  lower: 1.0
+  upper: 2
+  mode: 1.5
   distribution: triangular
 - complexity: 2
-  lower: 1.0
-  upper: 24.0
-  mode: 12.0
+  lower: 10.0
+  upper: 20.0
+  mode: 15.0
   distribution: triangular
 - complexity: 3
   lower: 54.0

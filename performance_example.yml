@@ -14,3 +14,12 @@ performance:
   upper: 83.0
   mode: 60.0
   distribution: triangular
+- complexity: 4
+  lower: 100.0
+  upper: 200.0
+  mode: 180.0
+  distribution: pert
+- complexity: 5
+  lower: 200.0
+  upper: 400.0
+  distribution: uniform

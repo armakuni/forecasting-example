@@ -2,7 +2,7 @@ backlog:
 - name: Task A
   complexity: 1
 - name: Task B
-  complexity: 2
+  complexity: 1
 - name: Task C
   complexity: 1
 - name: Task D
@@ -12,4 +12,10 @@ backlog:
 - name: Task F
   complexity: 1
 - name: Task G
+  complexity: 1
+- name: Task H
+  complexity: 1
+- name: Task I
+  complexity: 1
+- name: Task J
   complexity: 1
