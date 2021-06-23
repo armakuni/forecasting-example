@@ -1,5 +1,7 @@
 module Forecasting
   class MonteCarlo
+    attr_reader :performance
+
     def initialize(performance)
       @performance = performance
     end
@@ -12,7 +14,7 @@ module Forecasting
       iterations.times do
         worker_elapsed = [0.0] * workers
         backlog.each do |task|
-          complexity = @performance[task.complexity]
+          complexity = @performance[task.complexity] or raise "Unspecified complexity in task #{task.name}: #{task.complexity}"
           distribution = Distribution.select(complexity.distribution)
           elapsed = distribution.random(complexity.mode, complexity.lower, complexity.upper)
           worker_elapsed.sort!  # determine next worker to finish a task
@@ -28,7 +30,7 @@ module Forecasting
       @samples[(@samples.length * pct / 100).to_i]
     end
 
-    def report(io: STDOUT)
+    def report(io = STDOUT)
       io.puts "After #{@iterations} iterations with #{@workers} workers"
       io.puts '  50%% = %0.2f days' % percentile(50)
       io.puts '  80%% = %0.2f days' % percentile(80)
