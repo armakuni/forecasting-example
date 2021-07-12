@@ -10,7 +10,7 @@ require 'forecasting'
 backlog = Forecasting.load_backlog('backlog.yml')
 performance = Forecasting.load_performance('performance.yml')
 
-iterations = 1000
+iterations = 100_000
 samples = []
 
 # Doing a Monte Carlo simulation absolves us of having to do tricky stats. Instead, we just
