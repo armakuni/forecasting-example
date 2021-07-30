@@ -27,8 +27,7 @@ data Backlog = Backlog
 
 run :: MonadRandom m => Int -> [Int] -> Backlog -> m [Float]
 run iterations percentiles backlog = do
-    results <- simulate iterations backlog
-    return $ map (nthPercentile results) percentiles
+    nthPercentiles percentiles <$> simulate iterations backlog
 
 simulate :: MonadRandom m => Int -> Backlog -> m [Float]
 simulate iterations backlog =
