@@ -1,0 +1,1 @@
+--command="stack ghci haskell-monte-carlo:lib haskell-monte-carlo:test:haskell-monte-carlo-test --ghci-options='-fobject-code -Werror -Wall'" -T=main
