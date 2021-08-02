@@ -3,7 +3,7 @@
 module MonteCarlo
     ( Size(..)
     , Statistics(..)
-    , Backlog
+    , Backlog(..)
     , run
     ) where
 
@@ -20,21 +20,24 @@ data Statistics = Statistics
     , high :: Float
     } deriving (Show)
 
-type Backlog = [Size]
+data Backlog = Backlog
+    { stories :: [Size]
+    , statistics :: Map Size Statistics
+    }
 
-run :: Int -> [Int] -> Backlog -> Map Size Statistics -> IO [Float]
-run iterations percentiles backlog pastPerfomance = do
-    results <- simulate iterations backlog pastPerfomance
+run :: Int -> [Int] -> Backlog -> IO [Float]
+run iterations percentiles backlog = do
+    results <- simulate iterations backlog
     return $ map (nthPercentile results) percentiles
 
-simulate :: Int -> Backlog -> Map Size Statistics -> IO [Float]
-simulate iterations backlog pastPerfomance =
-    sort <$> replicateM iterations (simulateOnce backlog pastPerfomance)
+simulate :: Int -> Backlog -> IO [Float]
+simulate iterations backlog =
+    sort <$> replicateM iterations (simulateOnce backlog)
 
-simulateOnce :: Backlog -> Map Size Statistics -> IO Float
-simulateOnce backlog pastPerfomance = do
-    inputs <- randomNumbers $ length backlog
-    let backlogStats = map (pastPerfomance!) backlog
+simulateOnce :: Backlog -> IO Float
+simulateOnce Backlog{stories, statistics} = do
+    inputs <- randomNumbers $ length stories
+    let backlogStats = map (statistics!) stories
     let elapsedTimes = zipWith triangularize backlogStats inputs
     return $ sum elapsedTimes
 
@@ -54,4 +57,3 @@ triangularize Statistics{low, mode, high} value =
     if value <= (mode - low) / (high - low)
         then low + sqrt(value * (high - low) * (mode - low))
         else high - sqrt((1.0 - value) * (high - low) * (high - mode))
-
