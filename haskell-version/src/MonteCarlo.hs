@@ -7,10 +7,10 @@ module MonteCarlo
     , run
     ) where
 
-import System.Random
 import Control.Monad (replicateM)
 import Data.Map (Map, (!))
 import Data.List (sort)
+import Control.Monad.Random.Class (MonadRandom(getRandoms))
 
 data Size = Small | Medium | Large | XLarge deriving (Ord, Eq, Show)
 
@@ -25,25 +25,26 @@ data Backlog = Backlog
     , statistics :: Map Size Statistics
     }
 
-run :: Int -> [Int] -> Backlog -> IO [Float]
+run :: MonadRandom m => Int -> [Int] -> Backlog -> m [Float]
 run iterations percentiles backlog = do
     results <- simulate iterations backlog
     return $ map (nthPercentile results) percentiles
 
-simulate :: Int -> Backlog -> IO [Float]
+simulate :: MonadRandom m => Int -> Backlog -> m [Float]
 simulate iterations backlog =
     sort <$> replicateM iterations (simulateOnce backlog)
 
-simulateOnce :: Backlog -> IO Float
+simulateOnce :: MonadRandom m => Backlog -> m Float
 simulateOnce Backlog{stories, statistics} = do
     inputs <- randomNumbers $ length stories
     let backlogStats = map (statistics!) stories
     let elapsedTimes = zipWith triangularize backlogStats inputs
     return $ sum elapsedTimes
 
-randomNumbers :: Int -> IO [Float]
+randomNumbers :: MonadRandom m => Int -> m [Float]
 randomNumbers count =
-    replicateM count randomIO
+    take count <$> getRandoms
+    
 
 nthPercentile :: [a] -> Int  -> a
 nthPercentile items percentile =
